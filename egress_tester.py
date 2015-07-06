@@ -13,7 +13,8 @@ TIMEOUT = 3
 RUNNING = True
 
 def connect_thread(host):
-    while True:
+    global RUNNING
+    while RUNNING:
         try:
             port = QUEUE.pop()
         except:
@@ -52,9 +53,12 @@ def listen_thread(host,port):
                 elif i == sys.stdin:
                     command = sys.stdin.readline().strip('\n')
                     if command.lower() in ['quit','q','exit']:
+                        print "[i] exiting and killing threads"
                         RUNNING = False
                     else:
-                        print "entering quit, q, or exit will stop the listening threads."
+                        print "[i] entering quit, q, or exit will stop the listening threads."
+        if VERBOSE:
+            print "[i] closing port %d" % port
         server.close()
     except Exception, ex:
         print '[!] Error listing on %s:%d %s' % (host,port,str(ex))
